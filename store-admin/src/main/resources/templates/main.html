@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="kor" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <!-- new version main page 여기서는 sse 연결을 해볼 것이다.-->
+    <!-- sse 연결을 위해서는 도메인에 sse를 생성. -->
+    <h1>Main Page</h1>
+
+</body>
+<script>
+    const url = "http://localhost:8081/api/sse/connect"; // 접속주소
+    const eventSource = new EventSource(url); // sse 연결
+    eventSource.onopen = event =>{ // onopen: sse가 연결이 됐을 때 log로 들어오게 된다는 뜻.
+        console.log("sse connection");
+        console.log(event);
+    }
+    eventSource.onmessage = event =>{ // 서버로부터 받은 데이타는 이쪽으로 오게 설정한다는 뜻. event는 매개변수. 이때 onmessage 등의 이름은 emitter.event()로 이름을 바꿔줄수 있다.
+        console.log("receive data : " + event.data);
+    }
+</script>
+</html>

@@ -1,0 +1,27 @@
+version: '3.7' # 도커 컴포즈 터미널 실행방법 rabbitmq 디렉토리있는 터미널로 가서 docker compose up -d
+services: # 이후 도커 컴포즈에서 새로 생긴 rabbitmq가서 openterminal rabbitmq-plugins enable rabbitmq_management 이 명령어를 쳐준다.
+  rabbitmq:
+    image: rabbitmq:latest
+    ports:
+      - "5672:5672" # rabbitmq amqp port
+      - "15672:15672" # manage port
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin # 기본 사용자 이름
+      - RABBITMQ_DEFAULT_PASS=admin123!@# # 기본 사용자 비밀번호
+
+# 이 레빗엠큐란? 비동기식 처리방법을 위한 일종의 소프트웨어다.
+# 가맹점주와 주문자의 오가는 통신 사이에서 한번 끊어주고, 데이터 저장하고, 저장된 데이터를 며칠만 보관하는 설정도 가능하고, 저장된 데이터들을 꺼내주고 하는 그런 기능을 갖고 있다.
+# 즉 이렇게 하면 장점이 통신 딜레이가 짧아진다. 왜 why? 주문자에서 가맹점의 영역으로 갔다가 다시 주문자로 가는 통신이
+# 아닌 중간 매개체 역할로 주문자의 주문. ok 여기서 한번 통신 연결을 끊어주고. 가맹점주들은 저장된 ok 주문서 꺼내오면 그만인셈이니까다.
+# 만약 중간을 끊어주지 않는다면 어디서 통신 딜레이가 어디서 생긴지도 모른체 후 발주를 넣은 주문자들의 통신 영역이 밀리고 밀려 통신 자체를 느려지게 만들 수 있게 된다.
+
+# 이 레빗엠큐의 동작 방식은
+# produce(공급체 = 즉 주문자의 역할.) => exchange(우리가 쓰는 컨트롤러의 역할.) => MQ(통신 끊어주고 접수된 주문을 며칠간 보관) => 컨슘(저장된 데이터를 뽑아내는 = 즉 가맹점주들의 역할.)
+# 이렇기 때문에 api쪽에서 produce 작성해주면 된다. api의 build gradle에서. implementation 'org.springframework.boot:spring-boot-starter-amqp' 이렇게 디펜던시 걸어준다.
+# 이후 config에서 rabbitmq설정들을 작성해준다.
+
+# 공급체에서 별로 보냈는데 컨슘에서 동그라미로 뽑는다면 당연히 에러가 날 것이다. 때문에 데이터를 보낼 때 규격을 맞춰 줘야한다.
+# 그래서 공급체와 컨슘은 같은 객체를 사용하는 것이 가장 좋은 방법이 된다. 공통의 common모듈을 만드는 것이 하나의 방법이 될 수 있다.
+# 만약 같은 객체를 사용하지 않는다면 문자의 표준을 맞춘다는 방법이 있다. 예) json 규격을 맞추고 문자를 받아서 obj로 맵핑 시키는 방법.
+# common 모듈 디펜던시 거는법. implementation project(':common') 이런식으러 넣어주면 된다.
+# 이후 도메인 userOrder에서 공급체 작성을 해준다.

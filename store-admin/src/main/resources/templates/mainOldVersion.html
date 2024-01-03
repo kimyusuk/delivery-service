@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="kor" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <!-- tag 문법은 사용할 html문법 뒤 tab 누르면 tag까지 자동 생성 해준다. -->
+    <h1>Main Page</h1>
+    <!-- thymeleaf 문법에는 th:text="" 문법이 있다. 이때 객체 접근이 ${#authentication}으로 가능해진다. 이 authentication은 spring security가 자동으로 넣어주는 부분이다.-->
+    <!-- 이authentication은 우리가 UserDetails로 만든 session 값을 주는 방법을 통해 생성된다. .을 통해 객체에 접근 할수 있다. -->
+    <!-- 그리고 html 문법이 틀린순간 html 페이지가 오류 페이지로 나타나니까 html 문법을 틀리지 않도록 주의하자.    -->
+    <!-- ${#} #을 쓰는 순간 자바 문법처럼 접근이 가능해진다.    -->
+    <h1 th:text="${#authentication.name}"> </h1> <br> <!-- airheart0422@yonsei.ac.kr --> <!-- 이런식으로 값이 뜬다. -->
+    <!-- 이때 우리가 UserDetails로 authentication에 접근했는데, 이름만 갖고는 정보가 부족하다. 가게 이름까지 가져올 수 있도록 UserDetails의 빌드를 확장 시켜줘야한다.-->
+    <!-- 그러기 위해서는 spring security에서 제공해주는 User로 빌드 시켜주는 것이 아니라 우리가 직접 만든 UserSession을 통해 빌드해준다음에 더 많은 정보에 접근해주도록 한다.-->
+    <h1 th:text="${#authentication.principal.storeName}"> </h1> <br> <!-- 이때 principal은 우리가 만든 UserSession이 되는 것이다.--> <!-- 최고커피 -->
+    <h1 th:text="${#authentication.principal.role}"> </h1> <br> <!-- 마스터 권한 이런식으로 뜬다. -->
+    <h1 th:text="${#authentication}"> </h1> <br>
+    <!-- 이런식으로 정보를 뽑아낼수 있지만 우리는 타임리프라는 것을 사용하게되는 단점이 생긴다. 대부분이 restcontroller를 사용하기 때문에 여기서접근할수 있도록 코드를 짜보자.-->
+</body>
+</html>

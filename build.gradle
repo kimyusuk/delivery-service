@@ -1,0 +1,21 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '2.7.17'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+}
+
+allprojects {
+    repositories { // 내 하위 자식들은 모두 메이븐을 쓰겠다.
+        mavenCentral()
+    }
+}// 내 밑에 자식들은 나를 따르라~
+
+bootJar { // 원래 스프링부트는 자동으로 부트자르 라는 파일로 패키징을 한다.
+    // 부트자르 파일로 패키징 안한다. 이유는 부모코드는 어디에도 소스 코드가 없기 때문에.
+    enabled = false
+}
+
+jar { // 자르 파일로 패키징 안한다.
+    enabled = false
+
+}

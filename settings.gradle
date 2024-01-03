@@ -1,0 +1,8 @@
+rootProject.name = 'service2'
+include 'api'
+include 'db'
+include 'store-admin'
+include 'store-admin'
+include 'store-admin'
+include 'common'
+
